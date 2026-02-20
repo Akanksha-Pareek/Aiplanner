@@ -1,0 +1,81 @@
+// PrimeNG v18+ uses providePrimeNG in app.config.ts
+@import "primeicons/primeicons.css";
+
+:root {
+  --primary: #625df5;
+  --primary-gradient: linear-gradient(90deg, #f65c54 0%, #ab57a5 51.14%, #5c52fb 100%);
+  --tools-gradient: linear-gradient(90deg, #f65c54 36.49%, #ab57a5 51.09%, #5c52fb 66.3%);
+  --surface-ground: #000000;
+  --surface-card: rgba(255, 255, 255, 0.06);
+  --surface-card-hover: rgba(255, 255, 255, 0.1);
+  --text-color: #ffffff;
+  --text-muted: #c1c1c9;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-radius: 18px;
+  --font-main: 'Mulish', sans-serif;
+  --font-heading: 'Paytone One', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--surface-ground);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+.text-gradient {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tools-gradient {
+  background: var(--tools-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-bg {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(98, 93, 245, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
