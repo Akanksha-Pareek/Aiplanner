@@ -1,9 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
+import { Router } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
 import { FooterComponent } from './components/footer/footer';
-
+import { Api } from './services/api';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -13,4 +13,5 @@ import { FooterComponent } from './components/footer/footer';
 })
 export class App {
   protected readonly title = signal('aiplanner');
+  
 }

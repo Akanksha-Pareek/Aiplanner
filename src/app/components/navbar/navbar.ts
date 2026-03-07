@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { Router } from '@angular/router';
+import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-navbar',
@@ -10,17 +12,18 @@ import { InputTextModule } from 'primeng/inputtext';
   imports: [CommonModule, MenubarModule, ButtonModule, InputTextModule],
   template: `
     <nav class="navbar">
-       
+
       <!-- LOGO -->
       <div class="logo-container">
-      <div class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen">
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
+        <div class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
 
         <img src="assets/logo.png" alt="Logo" class="logo"
         onerror="this.src='https://findmyaitool.com/assets/images/logo.png'"/>
+
         <span class="brand-name">
           ai<span class="text-gradient">planner</span>
         </span>
@@ -31,19 +34,16 @@ import { InputTextModule } from 'primeng/inputtext';
 
         <div class="menu-header">
 
-    <span class="menu-title">
-      ai<span class="text-gradient">planner</span>
-    </span>
-  
+          <span class="menu-title">
+            ai<span class="text-gradient">planner</span>
+          </span>
 
-  <a class="menu-signin">
-    {{ isLoggedIn ? username : 'Sign In' }}
-  </a>
+          <a class="menu-signin" (click)="login()">
+            {{ isLoggedIn ? username : 'Sign In' }}
+          </a>
 
-</div>
+        </div>
 
-
-        
         <a href="#" class="nav-item active">Home</a>
         <a href="#" class="nav-item">Categories</a>
         <a href="#" class="nav-item">AI Agents</a>
@@ -52,11 +52,9 @@ import { InputTextModule } from 'primeng/inputtext';
 
       </div>
 
-      
-     
-
       <!-- DESKTOP ACTIONS -->
       <div class="actions">
+
         <p-button
           label="Submit"
           icon="pi pi-chevron-down"
@@ -69,12 +67,24 @@ import { InputTextModule } from 'primeng/inputtext';
           <i class="pi pi-search"></i>
         </div>
 
-        <div class="user-profile">
-          <img
-            src="https://ui-avatars.com/api/?name=Ranjan+Kumar&background=3b82f6&color=fff"
-            class="avatar"/>
-          <span class="username">Ranjan kumar</span>
+        <!-- USER PROFILE -->
+        <div class="user-profile" (click)="!isLoggedIn && login()">
+
+          <!-- BEFORE LOGIN -->
+          <ng-container *ngIf="!isLoggedIn">
+            <span class="signin-btn">Sign In</span>
+          </ng-container>
+
+          <!-- AFTER LOGIN -->
+          <ng-container *ngIf="isLoggedIn">
+            <img
+              src="https://ui-avatars.com/api/?name={{username}}&background=3b82f6&color=fff"
+              class="avatar"/>
+            <span class="username">{{username}}</span>
+          </ng-container>
+
         </div>
+
       </div>
 
     </nav>
@@ -97,7 +107,6 @@ import { InputTextModule } from 'primeng/inputtext';
   display:flex;
   align-items:center;
   gap:10px;
-  
 }
 
 .logo{ height:32px; }
@@ -125,6 +134,18 @@ import { InputTextModule } from 'primeng/inputtext';
   gap:1.5rem;
 }
 
+.user-profile{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+}
+
+.signin-btn{
+  color:#5b5bf7;
+  font-weight:500;
+}
+
 .avatar{
   width:32px;
   height:32px;
@@ -140,13 +161,6 @@ import { InputTextModule } from 'primeng/inputtext';
 
 @media (max-width:768px){
 
-.logo-container{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  
-}
-
 .hamburger{
   width:28px;
   height:20px;
@@ -154,27 +168,12 @@ import { InputTextModule } from 'primeng/inputtext';
   flex-direction:column;
   justify-content:space-between;
   cursor:pointer;
-  z-index:1000001;
 }
 
 .hamburger span{
   width:100%;
   height:2px;
   background:#fff;
-  border-radius:2px;
-  transition:all .35s cubic-bezier(.4,0,.2,1);
-}
-.hamburger.active span:nth-child(1){
-  transform:translateY(9px) rotate(45deg);
-}
-
-.hamburger.active span:nth-child(2){
-  opacity:0;
-  transform:scaleX(0);
-}
-
-.hamburger.active span:nth-child(3){
-  transform:translateY(-9px) rotate(-45deg);
 }
 
 .nav-links{
@@ -192,9 +191,6 @@ import { InputTextModule } from 'primeng/inputtext';
   transform:translateY(-100%);
   opacity:0;
   pointer-events:none;
-  transition:transform .4s ease, opacity .4s ease;
- z-index:999999;
-
 }
 
 .nav-links.show{
@@ -215,12 +211,10 @@ import { InputTextModule } from 'primeng/inputtext';
   justify-content:space-between;
 }
 
-
 .menu-title{
   margin-left:30px;
   font-size:1.25rem;
   font-weight:800;
-  line-height:1;
 }
 
 .menu-signin{
@@ -228,40 +222,56 @@ import { InputTextModule } from 'primeng/inputtext';
   color:#5b5bf7;
   font-size:16px;
   font-weight:500;
-  text-decoration:none;
 }
+
 .nav-item{
   color:#fff;
   font-size:24px;
   margin:18px 0;
-  font-weight:500;
-  text-decoration:none;
 }
 
 .username{display:none;}
 .actions p-button{display:none;}
 
 }
-
 `
 })
 export class NavbarComponent {
 
   menuOpen = false;
-
   isLoggedIn = false;
   username = "";
 
- toggleMenu(){
-  this.menuOpen = !this.menuOpen;
+  constructor(private api: Api, private router: Router) {}
 
-  if(this.menuOpen){
-    document.body.style.overflow = 'hidden';
-  }else{
-    document.body.style.overflow = 'auto';
+  toggleMenu(){
+    this.menuOpen = !this.menuOpen;
+
+    if(this.menuOpen){
+      document.body.style.overflow = 'hidden';
+    }else{
+      document.body.style.overflow = 'auto';
+    }
   }
-}
 
+  login() {
 
+    this.api.login().subscribe((data: any) => {
+
+      console.log('Login successful:', data);
+      const name = data.name;
+      
+
+      localStorage.setItem('name', name);
+      
+
+      this.username = name;
+      this.isLoggedIn = true;
+
+      this.router.navigate(['/dashboard']);
+
+    });
+
+  }
 
 }
